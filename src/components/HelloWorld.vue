@@ -1,19 +1,26 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-
+    <div>
     <input type="text" placeholder="请输入你的问题" v-model="myInput" />
     <button @click="getOpenAi">提交</button>
+    </div>
     <h2>{{ myInput }}</h2>
-
+    <h2>{{ messages }}</h2>
     <hr />
     <!--这个标签的涵义就是一条水平的直线，但是不灵活，现在基本没人使用！-->
-    <textarea name="re" id="ai" cols="150" rows="10" v-model="messages"></textarea>
+    <textarea
+      name="re"
+      id="ai"
+      cols="150"
+      rows="10"
+      v-model="messages"
+    ></textarea>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 export default {
   name: "HelloWorld",
   props: {
@@ -32,18 +39,22 @@ export default {
     },
     async getOpenAi() {
       // 解构赋值
-      const {data: res} = await axios({
+      const { data: res } = await axios({
         method: "POST",
         url: "https://api.openai.com/v1/chat/completions",
-        headers: {"Content-Type": "application/json", "Authorization": "Bearer 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"},
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            "Bearer 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",
+        },
         data: {
           model: "gpt-3.5-turbo",
           messages: [{ role: "user", content: "Hello!" }],
         },
       });
-      let messages = res.choices[0]['message']['content'];
+      var messages = res.choices[0]["message"]["content"];
       console.log(messages);
-      return messages
+      return messages;
     },
   },
 };
