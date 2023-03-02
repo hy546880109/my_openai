@@ -45,7 +45,7 @@ export default {
         headers: {
           "Content-Type": "application/json",
           Authorization:
-            "Bearer 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",
+            "Bearer {openai_key}",
         },
         data: {
           model: "gpt-3.5-turbo",
