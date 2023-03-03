@@ -3,7 +3,7 @@
     <h1>{{ msg }}</h1>
     <div>
       <input type="text" id="input" placeholder="请输入你的问题" v-model="myInput" />
-      <button @click="getApi">提交</button>
+      <button @click="getOpenAi">提交</button>
     </div>
     <div id="my_css">
       <h2 id="my">{{ myInput }}</h2>
@@ -26,6 +26,7 @@ export default {
     return {
       myInput: "",
       messages: "",
+      ai_key: "",
     };
   },
   methods: {
@@ -33,37 +34,50 @@ export default {
       console.log(this.myInput);
       return this.myInput;
     },
-    // async getOpenAi() {
-    //   // 解构赋值
-    //   const { data: res } = await axios({
-    //     method: "POST",
-    //     url: "https://api.openai.com/v1/chat/completions",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization:
-    //         "Bearer {ai_key}",
-    //     },
-    //     data: {
-    //       model: "gpt-3.5-turbo",
-    //       messages: [{ role: "user", content: "Hello!" }],
-    //     },
-    //   });
-    //   var messages = res.choices[0]["message"]["content"];
-    //   console.log(messages);
-    //   return messages;
-    // },
 
-    async getApi() {
+    async getOpenAi() {
+      // 解构赋值
+
+      console.log(this.ai_key)
       const { data: res } = await axios({
-        method: "GET",
-        url: 'http://127.0.0.1:8000',
+        method: "POST",
+        url: "https://api.openai.com/v1/chat/completions",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${this.ai_key}`,
+        },
+        data: {
+          model: "gpt-3.5-turbo",
+          messages: [{ role: "user", content: "Hello!" }],
+        },
       });
-      console.log(res)
-      this.messages = res
-      return res
+      var mes = res.choices[0]["message"]["content"];
+      console.log(mes);
+      return mes;
+    },
+
+    readjson() {
+      axios.get('/ai_key.json').then(res => {
+        this.ai_key = res.data.key
+        console.log(this.key)//此处的res对象包含了json的文件信息和数据，我们需要的json数据存在于key属性中
+        return res
+      },
+      )
     }
+
+    // async getApi() {
+    //   const { data: res } = await axios({
+    //     method: "GET",
+    //     url: 'http://127.0.0.1:8000',
+    //   });
+    //   console.log(res)
+    //   this.messages = res
+    //   return res
+    // }
   },
+
 };
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -76,6 +90,7 @@ h2 {
   width: 300px;
   height: 40px;
 }
+
 #my_css {
   width: 500px;
   height: 200px;
